@@ -17,6 +17,8 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^update$','webapp.views.update'),
+    url(r'^usuario/(.+)','webapp.views.usuario'),
+    url(r'^museos','webapp.views.museos'),
     url(r'^$','webapp.views.barra'),
     url(r'^admin/', include(admin.site.urls)),
 ]
