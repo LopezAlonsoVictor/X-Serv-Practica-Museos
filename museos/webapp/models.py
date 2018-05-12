@@ -21,7 +21,7 @@ class Museo(models.Model):
         return self.nombre
 
 class Usuario(models.Model):
-    nombre = models.OneToOneField(User,related_name="usuario")
+    nombre = models.OneToOneField(User)
     color = models.CharField(max_length=16)
     tamaño = models.IntegerField()
     fondo = models.CharField(max_length=16)
@@ -34,7 +34,7 @@ class Seleccion(models.Model):
     museo = models.ForeignKey(Museo)
     fecha = models.DateTimeField(default = timezone.now())
     def __str__(self):
-        return self.museo
+        return self.museo.nombre
 
 class Comentario(models.Model):
     comentario = models.TextField()

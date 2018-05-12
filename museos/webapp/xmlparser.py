@@ -40,7 +40,6 @@ class myContentHandler(ContentHandler):
             self.inContent = True
             
     def endElement (self, name):
-        print(self.theContent)
         if self.atributo == "NOMBRE":
             self.nombre = self.theContent
         elif self.atributo == "DESCRIPCION-ENTIDAD":

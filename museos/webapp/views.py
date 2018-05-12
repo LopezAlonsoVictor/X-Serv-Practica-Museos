@@ -3,10 +3,12 @@ from django.http import HttpResponse
 from .xmlparser import getrss
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
 
 from .models import Museo
 from .models import Comentario
 from .models import Usuario
+from .models import Seleccion
 
 # Create your views here.
 
@@ -19,6 +21,14 @@ FILT_ACCESIBILIDAD_POST = '''
 FILT_ACCESIBILIDAD_GET = '''
             <form action="" Method="GET">
             <input type="submit" value="Todos">
+</form>
+'''
+
+FORMULARIO_COMENTARIOS = '''
+            <form action="" Method="POST">
+            Introduce:<br>
+            <input type="text" name="comentario" placeholder="Escriba aqui su comentario...">
+            <input type="submit" value="Comentar">
 </form>
 '''
 
@@ -93,15 +103,52 @@ def barra(request):
         boton = FILT_ACCESIBILIDAD_GET
     for i in range(0,len(lista)):
         museo = Museo.objects.get(nombre=lista[i])
-        view_museos += '<ul><li><a href="' + museo.enlace + '">'+ museo.nombre + '</a></li><li>' + museo.direccion + '</li><li><a href="http://localhost:8000/museo/' + str(museo.id) + '">mas info</a></li></ul>'
+        view_museos += '<ul><li><a href="' + museo.enlace + '">'+ museo.nombre + '</a></li><li>' + museo.direccion + '</li><li><a href="http://localhost:8000/museos/'+str(museo.id) + '">mas info</a></li></ul>'
     return HttpResponse(view_museos+'<br>'+view_usuarios+'<br>'+view_login+'<br>'+view_logout+'<br>'+boton)
 
-def usuario(request):
-    return HttpResponse("holaaaa")
+def usuario(request,usuario_id):
+    pagina = request.GET.urlencode().split('=')[0]
+    if pagina == "":
+        pagina = 0
+    else:
+        pagina = int(pagina) 
+    selecciones = Seleccion.objects.filter(usuario_id=usuario_id)
+    selecciones = selecciones[5*int(pagina):5*int(pagina+1)]
+    view_museos = ""
+    for seleccion in selecciones:
+        view_museos += '<ul><li><a href="' + seleccion.museo.enlace + '">'+ seleccion.museo.nombre + '</a></li><li>' + seleccion.museo.direccion +'</li><li>'+ str(seleccion.fecha) +'</li><li><a href="http://localhost:8000/museos/'+str(seleccion.museo.id) + '">mas info</a></li></ul>'
+    return HttpResponse(view_museos+'<br>'+str(pagina))
+
+@csrf_exempt
+def museo(request,museo_id):
+    #si estas registrado pongo este formulario
+    #if request.user.is_authenticated():
+    #    logged = 'Logged in as ' + request.user.username
+    #    log = "Logout"
+    #    url = "/logout"
+    #else:
+    #    logged = 'Not logged in'
+    #    log = "Login"
+    #    url = "/login"
+    museo = Museo.objects.get(id=museo_id)
+    if request.method == "POST":
+        aux_usuario = User.objects.get(username=request.user.username)
+        aux_usuario = Usuario.objects.get(nombre_id=aux_usuario)
+        aux_comentario = request.POST['comentario']
+        nuevo = Comentario(usuario=aux_usuario,comentario=aux_comentario,museo=museos)
+        nuevo.save()
+    comentarios = Comentario.objects.filter(museo = museo)
+    view_usuarios=""
+    view_login = '<a href="htpp://localhost:8000/login">Iniciar sesion</a>'
+    view_logout = '<a href="htpp://localhost:8000/logout">Cerrar sesion</a>'
+    view_museos = "Nombre: " + museo.nombre+"<br>"+"Direccion: "+museo.direccion+"<br>"+"Enlace: "+museo.enlace + "<br>" + "Descripcion: " + museo.descripcion + "<br>" + "Barrio: "+museo.barrio+"<br>"+"Distrito: "+museo.distrito+"<br>"+"Accesibilidad: "+museo.accesibilidad+"<br>"+"Telefono: "+museo.telefono+"<br>"+"Fax: "+museo.fax+"<br>"+"Email: "+museo.email+"<br>"
+    view_museos += '<h3>Lista de comentarios</h3>'
+    for comentario in comentarios:
+        view_museos += '<h4>'+comentario.usuario.nombre.username+'</h4>: '+comentario.comentario+'<br>'+str(comentario.fecha)
+    return HttpResponse(view_museos+'<br>'+view_login+'<br>'+view_logout+"<br>"+FORMULARIO_COMENTARIOS)
 
 @csrf_exempt
 def museos(request):
-    print(request)
     museos = Museo.objects.all()
     barrios = getbarrios(museos)
     menu = menu_filtrado(barrios)
