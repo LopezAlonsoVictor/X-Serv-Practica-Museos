@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+    <contenidos>
+        {% for seleccion in selecciones %}
+            <contenido>
+                <atributo nombre="NOMBRE">{{ seleccion.museo.nombre }}</atributo>
+                <atributo nombre="DIRECCION">{{ seleccion.museo.direccion }}</atributo>
+                <atributo nombre="ENLACE">{{ seleccion.museo.enlace }}</atributo>
+                <atributo nombre="DESCRIPCION">{{ seleccion.museo.descripcion }}</atributo>
+                <atributo nombre="BARRIO">{{ seleccion.museo.barrio }}</atributo>
+                <atributo nombre="DISTRITO">{{ seleccion.museo.distrito }}</atributo>
+                <atributo nombre="ACCESIBILIDAD">{{ seleccion.museo.accesibilidad }}</atributo>
+                <atributo nombre="TELEFONO">{{ seleccion.museo.telefono }}</atributo>
+                <atributo nombre="FAX">{{ seleccion.museo.fax }}</atributo>
+                <atributo nombre="EMAIL">{{ seleccion.museo.email }}</atributo>
+            </contenido>
+        {% endfor %}
+    </contenidos>
