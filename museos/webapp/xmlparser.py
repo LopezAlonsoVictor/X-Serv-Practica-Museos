@@ -11,6 +11,8 @@ from webapp.models import Museo
 def normalize_whitespace(text):
     return string.join(string.split(text), ' ')
 
+
+
 class myContentHandler(ContentHandler):
 
     def __init__ (self):
@@ -76,6 +78,20 @@ class myContentHandler(ContentHandler):
                             distrito = self.distrito,telefono = self.telefono,
                             fax = self.fax,email = self.email)
             museo.save()
+            self.atributo = ""
+            self.inContent = False
+            self.theContent = ""
+            self.nombre = ""
+            self.descripcion = ""
+            self.accesibilidad = ""
+            self.enlace = ""
+            self.direccion = ""
+            self.direccion_aux = ""
+            self.barrio = ""
+            self.distrito = ""
+            self.telefono = ""
+            self.fax = ""
+            self.email = ""
 
     def characters (self, chars):
         if self.inContent:

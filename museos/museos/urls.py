@@ -14,12 +14,16 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.contrib.auth.views import logout, login
 
 urlpatterns = [
     url(r'^update$','webapp.views.update'),
+    url(r'^usuario/(.+)/xml$','webapp.views.xml'),
     url(r'^usuario/(.+)','webapp.views.usuario'),
     url(r'^museos$','webapp.views.museos'),
     url(r'^museos/(.+)$','webapp.views.museo'),
     url(r'^$','webapp.views.barra'),
+    url(r'^logout/',logout,{'next_page':'/'}),
+    url(r'^login/','webapp.views.login'),
     url(r'^admin/', include(admin.site.urls)),
 ]

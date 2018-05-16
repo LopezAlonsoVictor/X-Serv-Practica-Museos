@@ -22,7 +22,6 @@ class Museo(models.Model):
 
 class Usuario(models.Model):
     nombre = models.OneToOneField(User)
-    color = models.CharField(max_length=16)
     tamaño = models.IntegerField()
     fondo = models.CharField(max_length=16)
     titulo = models.CharField(max_length=16)
