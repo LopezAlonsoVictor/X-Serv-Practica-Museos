@@ -9,7 +9,6 @@ from django.contrib import auth
 from django.contrib.auth import logout,login,authenticate
 from django.shortcuts import render
 from django.template.loader import get_template
-from django.template import RequestContext
 from django.template import Context
 
 from .models import Museo
@@ -187,7 +186,7 @@ def identificado(request,recurso):
 def barra(request):
     museos_mostrar = 5
     boton = FILT_ACCESIBILIDAD_POST
-    view_museos = ""
+    view_museos = "<ul>"
     view_usuarios = "<ul>"
     comentarios = Comentario.objects.all()
     usuarios = Usuario.objects.all()
@@ -201,9 +200,14 @@ def barra(request):
         boton = FILT_ACCESIBILIDAD_GET
     for i in range(0,len(lista)):
         museo = Museo.objects.get(nombre=lista[i])
-        view_museos += '<ul><li><a href="' + museo.enlace + '">'+ museo.nombre + '</a></li><li>' + museo.direccion + '</li><li><a href="http://localhost:8000/museos/'+str(museo.id) + '">mas info</a></li></ul>'
+        view_museos += '<li><h2><a href="' + museo.enlace + '">'+ museo.nombre + '</a></h2><p>' + museo.direccion + '</p><footer class="more"><a href="http://localhost:8000/museos/'+str(museo.id) + '">mas info</a></footer></li>'
+    view_museos += '</ul>'
     view_log,view_coment,view_like,view_fondo,view_letra,view_titulo = identificado(request,"barra")
-    return HttpResponse(view_museos+'<br>'+view_usuarios+'<br>'+boton+'<br>'+view_log+'<br>'+view_coment+'<br>'+view_like+'<br>'+view_fondo+'<br>'+view_letra+'<br>'+view_titulo)
+    template = get_template('index.html')
+    contexto = Context({'view_museos':view_museos,'view_usuarios':view_usuarios})
+    respuesta = template.render(contexto)
+    return HttpResponse(respuesta)
+    #return HttpResponse(view_museos+'<br>'+view_usuarios+'<br>'+boton+'<br>'+view_log+'<br>'+view_coment+'<br>'+view_like+'<br>'+view_fondo+'<br>'+view_letra+'<br>'+view_titulo)
 
 @csrf_exempt
 def usuario(request,usuario_id):
@@ -224,10 +228,10 @@ def usuario(request,usuario_id):
         pagina = int(pagina) 
     selecciones = Seleccion.objects.filter(usuario_id=usuario_id)
     selecciones = selecciones[5*int(pagina):5*int(pagina+1)]
-    view_museos = ""
+    view_museos = "<ul>"
     for seleccion in selecciones:
-        view_museos += '<ul><li><a href="' + seleccion.museo.enlace + '">'+ seleccion.museo.nombre + '</a></li><li>' + seleccion.museo.direccion +'</li><li>'+ str(seleccion.fecha) +'</li><li><a href="http://localhost:8000/museos/'+str(seleccion.museo.id) + '">mas info</a></li></ul>'
-    view_museos = saltopagina(usuario_id,view_museos,pagina)+'<br><a href="http://localhost:8000/usuario/'+usuario_id+'/xml">Obtener XML</a>'
+        view_museos += '<li><h2><a href="' + seleccion.museo.enlace + '">'+ seleccion.museo.nombre + '</a></h2><p>' + seleccion.museo.direccion +'</li><li>'+ str(seleccion.fecha) +'</p><footer class="more"><a href="http://localhost:8000/museos/'+str(seleccion.museo.id) + '">mas info</a></footer></li>'
+    view_museos = '</ul>'+saltopagina(usuario_id,view_museos,pagina)+'<br><a href="http://localhost:8000/usuario/'+usuario_id+'/xml">Obtener XML</a>'
     view_log,view_coment,view_like,view_fondo,view_letra,view_titulo = identificado(request,"usuario")
     return HttpResponse(view_museos+'<br>'+view_log+'<br>'+view_coment+'<br>'+view_like+'<br>'+view_fondo+'<br>'+view_letra+'<br>'+view_titulo)
 
@@ -282,6 +286,6 @@ def login(request):
 def xml(request,usuario_id):
     selecciones = Seleccion.objects.filter(usuario_id=usuario_id)
     template = get_template('usuario.xml')
-    contexto = RequestContext(request,{'selecciones':selecciones})
+    contexto = Context({'selecciones':selecciones})
     respuesta = template.render(contexto)
     return HttpResponse(respuesta,content_type="text/xml")

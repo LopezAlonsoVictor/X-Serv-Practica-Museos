@@ -14,7 +14,8 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from django.contrib.auth.views import logout, login
+from django.contrib.auth.views import logout
+from django.views.static import serve
 
 urlpatterns = [
     url(r'^update$','webapp.views.update'),
@@ -25,5 +26,6 @@ urlpatterns = [
     url(r'^$','webapp.views.barra'),
     url(r'^logout/',logout,{'next_page':'/'}),
     url(r'^login/','webapp.views.login'),
+    url(r'^static(.+)$',serve,{'document_root':'templates'}),
     url(r'^admin/', include(admin.site.urls)),
 ]
