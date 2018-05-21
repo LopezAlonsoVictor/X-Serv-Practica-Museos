@@ -277,7 +277,7 @@ def museos(request):
     view_museos += '</ul>'
     view_barra,view_log,view_coment,view_like,view_fondo,view_letra,view_titulo = identificado(request,"museos")
     template = get_template('index.html')
-    contexto = Context({'view_barra':view_barra,'view_museos':view_museos,'view_log':view_log,'view_coment':view_coment,'view_like':view_like,'view_fondo':view_fondo,'view_titulo':view_titulo,'view_letra':view_letra})
+    contexto = Context({'view_barra':view_barra,'view_museos':menu+'<br>'+view_museos,'view_log':view_log,'view_coment':view_coment,'view_like':view_like,'view_fondo':view_fondo,'view_titulo':view_titulo,'view_letra':view_letra})
     respuesta = template.render(contexto)
     return HttpResponse(respuesta)
 
