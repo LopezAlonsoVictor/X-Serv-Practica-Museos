@@ -24,8 +24,10 @@ urlpatterns = [
     url(r'^museos$','webapp.views.museos'),
     url(r'^museos/(.+)$','webapp.views.museo'),
     url(r'^$','webapp.views.barra'),
+    url(r'^about$','webapp.views.about'),
     url(r'^logout/',logout,{'next_page':'/'}),
     url(r'^login/','webapp.views.login'),
+    url(r'^layout.css$','webapp.views.css'),
     url(r'^static(.+)$',serve,{'document_root':'templates'}),
     url(r'^admin/', include(admin.site.urls)),
 ]

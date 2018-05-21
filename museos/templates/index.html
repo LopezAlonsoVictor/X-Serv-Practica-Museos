@@ -3,64 +3,62 @@
 <head>
 <title>Buscador de museos</title>
 <meta charset="iso-8859-1">
-<link rel="stylesheet" href="static/styles/layout.css" type="text/css">
-<!--[if lt IE 9]><script src="scripts/html5shiv.js"></script><![endif]-->
+<link rel="stylesheet" href="http://localhost:8000/layout.css" type="text/css">
+<link rel="icon" href="http://localhost:8000/static/images/banner.png" type="image/x-icon" class="js-site-favicon">
 </head>
 <body>
 <div class="wrapper row1">
   <header id="header" class="clear">
     <div id="hgroup">
-      <a href="localhost:8000"><img src="static/images/banner.png"/></a>
-      <!-- <h1>Buscador de museos</h1> -->
+      <a href="http://localhost:8000"><img src="http://localhost:8000/static/images/banner.png"/></a>
       <h2>Designed by Victor Lopez</h2>
     </div>
     <nav id="login">
         <p>
-            <form method="post" action="http://localhost:8000/login/">
-                Username:
-                <input type="text" name="usuario" placeholder="Usuario">
-                <br>Password:
-                <input type="password" name="contraseña" placeholder="Password">
-                <input type="submit" value="login">
-            </form>
+            {{ view_log|safe }}
         </p>
     </nav>
   </header>
 </div>
-<!-- content -->
 <div class="wrapper row4">
     <nav id="menu">
       <ul>
-        <li><a href="localhost:8000">Inicio</a></li>
-        <li><a href="localhost:8000/museos">Todos</a></li>
-        <li><a href="localhost:8000/about">About</a></li>
+        {{ view_barra|safe }}
+        <li><a href="http://localhost:8000/museos">Todos</a></li>
+        <li><a href="http://localhost:8000/about">About</a></li>
       </ul>
     </nav>
 </div>
 <div class="wrapper row2">
   <div id="container" class="clear">
-    <!-- main content -->
-    <!-- left column -->
     <aside id="left_column">
-      <h2 class="title">Usuarios</h2>
-      <nav>
         {{ view_usuarios|safe }}
-      </nav>
-      <!-- /nav -->
     </aside>
     <div id="content">
       <section id="posts" class="last clear">
         {{ view_museos|safe }}
       </section>
     </div>
-    <!-- / content body -->
+    <div>
+    {{ view_coment|safe }}
+    </div>
+    <div>
+    {{ view_like|safe }}
+    </div>
+    <div>
+    {{ view_fondo|safe }}
+    </div>
+    <div>
+    {{ view_letra|safe }}
+    </div>
+    <div>
+    {{ view_titulo|safe }}
+    </div>
   </div>
 </div>
-<!-- Footer -->
 <div class="wrapper row1">
   <footer id="footer" class="clear">
-    <p class="fl_left">Copyright &copy; 2012 - All Rights Reserved - <a href="#">Domain Name</a></p>
-    <p class="fl_right">Template by <a href="http://www.os-templates.com/" title="Free Website Templates">OS Templates</a></p>
+    <p class="fl_right">Template by Victor Lopez</p>
   </footer>
 </div>
 </body>

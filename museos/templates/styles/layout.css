@@ -8,7 +8,7 @@ Licence: <a href="http://www.os-templates.com/template-terms">Website Template L
 
 html{overflow-y:scroll;} /* Forces a scrollbar when the viewport is larger than the websites content - CSS3 */
 
-body{margin:0; padding:0; font-size:13px; font-family:Georgia, "Times New Roman", Times, serif; color:#919191; background-color:#232323;}
+body{margin:0; padding:0; font-size:{{ letra|default:'13px' }}; font-family:Georgia, "Times New Roman", Times, serif; color:#919191; background-color:#232323;}
 
 .clear:after{content:"."; display:block; height:0; clear:both; visibility:hidden; line-height:0;}
 .clear{display:block; clear:both;}
@@ -32,18 +32,17 @@ img{margin:0; padding:0; border:none; line-height:normal; vertical-align:middle;
 address, article, aside, figcaption, figure, footer, header, nav, section{display:block; margin:0; padding:0;}
 
 q{display:block; padding:0 10px 8px 10px; color:#979797; background-color:#ECECEC; font-style:italic; line-height:normal;}
-q:before{content:'“ '; font-size:26px;}
-q:after{content:' „'; font-size:26px; line-height:0;}
+
 
 /* ----------------------------------------------Wrapper-------------------------------------*/
 
 div.wrapper{display:block; width:100%; margin:0; padding:0; text-align:left;}
 
-.row1, .row1 a{color:#C0BAB6; background-color:blue;}
+.row1, .row1 a{color:#C0BAB6; background-color:{{ color|default:'blue' }};}
 .row2{color:#979797; background-color:#FFFFFF;}
 .row2 a{color:#FF9900; background-color:#FFFFFF;}
 .row3, .row3 a{color:#919191; background-color:red;}
-.row4{padding:20px 0;display:block; float:none; margin:10px 0 0 0; padding:20px 0; color:#C0BAB6; background-color:blue;}
+.row4{padding:20px 0;display:block; float:none; margin:10px 0 0 0; padding:20px 0; color:#C0BAB6; background-color:{{ color|default:'blue' }};}
 .row4, .row4 nav ul{padding:0 20px;}
 .row4, .row4  nav li{display:inline; margin-right:25px; text-transform:uppercase;}
 .row4, .row4  nav li.last{margin-right:0;}
@@ -61,8 +60,7 @@ h1, h2, h3, h4, h5, h6{margin:0; padding:0; font-size:16px; font-weight:bold; fo
 address{font-style:normal;}
 
 blockquote, q{display:block; padding:8px 10px; color:#979797; background-color:#ECECEC; font-style:italic; line-height:normal;}
-blockquote:before, q:before{content:'“ '; font-size:26px;}
-blockquote:after, q:after{content:' „'; font-size:26px; line-height:0;}
+
 
 form, fieldset, legend{margin:0; padding:0; border:none;}
 legend{display:none;}
@@ -90,7 +88,7 @@ input, textarea, select{font-size:12px; font-family:Georgia,"Times New Roman",Ti
 #header #hgroup h1{font-size:36px;}
 #header #hgroup h2{font-size:13px;}
 
-#header nav{display:block; float:right; margin:10px 0 0 0; padding:20px 0; color:#C0BAB6; background-color:blue;}
+#header nav{display:block; float:right; margin:10px 0 0 0; padding:20px 0; color:#C0BAB6; background-color:{{ color|default:'blue ' }};}
 #header nav ul{padding:0 20px;}
 #header nav li{display:inline; margin-right:25px; text-transform:uppercase;}
 #header nav li.last{margin-right:0;}
@@ -150,7 +148,7 @@ input, textarea, select{font-size:12px; font-family:Georgia,"Times New Roman",Ti
 #container #left_column nav ul{margin:0; padding:0; list-style:none;}
 #container #left_column nav li{margin:0 0 3px 0; padding:0;}
 #container #left_column nav li.last{margin-bottom:0;}
-#container #left_column nav a{display:block; margin:0; padding:5px 10px 5px 20px; color:#666666; background:url("../images/orange_file.gif") no-repeat 10px center #FFFFFF; text-decoration:none; border-bottom:1px dotted #666666;}
+#container #left_column nav a{display:block; margin:0; padding:5px 10px 5px 20px; color:#666666; background:url("http://localhost:8000/static/images/orange_file.gif") no-repeat 10px center #FFFFFF; text-decoration:none; border-bottom:1px dotted #666666;}
 #container #left_column nav a:hover{color:#FF9900; background-color:#FFFFFF;}
 
 /*----------------------------------------------Footer-------------------------------------*/

@@ -155,6 +155,7 @@ def saltopagina(usuario,view_museos,pagina):
     return view_museos
 
 def identificado(request,recurso):
+    view_barra = ""
     view_log = ""
     view_fondo = ""
     view_letra = ""
@@ -166,6 +167,8 @@ def identificado(request,recurso):
         view_log = '<a href="http://localhost:8000/logout">Cerrar sesion</a>'
     else:
         view_log = FORMULARIO_LOGIN
+    if recurso != "barra":
+        view_barra = '<li><a href="http://localhost:8000">Inicio</a></li>'
     if recurso == "museo" and request.user.is_authenticated():
         view_coment = FORMULARIO_COMENTARIOS;
         selecciones = Seleccion.objects.filter(museo=request.path.split('/')[2])
@@ -174,25 +177,24 @@ def identificado(request,recurso):
                 existe = True
         if not existe:
             view_like = LIKE
-        print(existe)
     if recurso == "usuario" and request.user.is_authenticated():
         if request.user.id == int(request.path.split('/')[2]):
             view_fondo = FORMULARIO_FONDO
             view_letra = FORMULARIO_LETRA
             view_titulo = FORMULARIO_TITULO
-    return view_log,view_coment,view_like,view_fondo,view_letra,view_titulo
+    return view_barra,view_log,view_coment,view_like,view_fondo,view_letra,view_titulo
 
 @csrf_exempt
 def barra(request):
     museos_mostrar = 5
     boton = FILT_ACCESIBILIDAD_POST
     view_museos = "<ul>"
-    view_usuarios = "<ul>"
+    view_usuarios = '<h2 class="title">Usuarios</h2><nav><ul>'
     comentarios = Comentario.objects.all()
     usuarios = Usuario.objects.all()
     for usuario in usuarios:
         view_usuarios += '<li>'+usuario.nombre.username+'-->'+'<a href="http://localhost:8000/usuario/'+str(usuario.id)+'">'+gettitulo(usuario)+'</a></li>'
-    view_usuarios += '</ul>'
+    view_usuarios += '</ul></nav>'
     lista = contador(comentarios)
     lista = mascomentarios(lista,museos_mostrar)
     if request.method == "POST":
@@ -202,12 +204,11 @@ def barra(request):
         museo = Museo.objects.get(nombre=lista[i])
         view_museos += '<li><h2><a href="' + museo.enlace + '">'+ museo.nombre + '</a></h2><p>' + museo.direccion + '</p><footer class="more"><a href="http://localhost:8000/museos/'+str(museo.id) + '">mas info</a></footer></li>'
     view_museos += '</ul>'
-    view_log,view_coment,view_like,view_fondo,view_letra,view_titulo = identificado(request,"barra")
+    view_barra,view_log,view_coment,view_like,view_fondo,view_letra,view_titulo = identificado(request,"barra")
     template = get_template('index.html')
-    contexto = Context({'view_museos':view_museos,'view_usuarios':view_usuarios})
+    contexto = Context({'view_barra':view_barra,'view_museos':boton+'<br>'+view_museos,'view_usuarios':view_usuarios,'view_log':view_log,'view_coment':view_coment,'view_like':view_like,'view_fondo':view_fondo,'view_titulo':view_titulo,'view_letra':view_letra})
     respuesta = template.render(contexto)
     return HttpResponse(respuesta)
-    #return HttpResponse(view_museos+'<br>'+view_usuarios+'<br>'+boton+'<br>'+view_log+'<br>'+view_coment+'<br>'+view_like+'<br>'+view_fondo+'<br>'+view_letra+'<br>'+view_titulo)
 
 @csrf_exempt
 def usuario(request,usuario_id):
@@ -228,12 +229,15 @@ def usuario(request,usuario_id):
         pagina = int(pagina) 
     selecciones = Seleccion.objects.filter(usuario_id=usuario_id)
     selecciones = selecciones[5*int(pagina):5*int(pagina+1)]
-    view_museos = "<ul>"
+    view_museos = '<h4>'+Usuario.objects.get(id=usuario_id).titulo+'</h4><br>'"<ul>"
     for seleccion in selecciones:
         view_museos += '<li><h2><a href="' + seleccion.museo.enlace + '">'+ seleccion.museo.nombre + '</a></h2><p>' + seleccion.museo.direccion +'</li><li>'+ str(seleccion.fecha) +'</p><footer class="more"><a href="http://localhost:8000/museos/'+str(seleccion.museo.id) + '">mas info</a></footer></li>'
     view_museos = '</ul>'+saltopagina(usuario_id,view_museos,pagina)+'<br><a href="http://localhost:8000/usuario/'+usuario_id+'/xml">Obtener XML</a>'
-    view_log,view_coment,view_like,view_fondo,view_letra,view_titulo = identificado(request,"usuario")
-    return HttpResponse(view_museos+'<br>'+view_log+'<br>'+view_coment+'<br>'+view_like+'<br>'+view_fondo+'<br>'+view_letra+'<br>'+view_titulo)
+    view_barra,view_log,view_coment,view_like,view_fondo,view_letra,view_titulo = identificado(request,"usuario")
+    template = get_template('index.html')
+    contexto = Context({'view_barra':view_barra,'view_museos':view_museos,'view_log':view_log,'view_coment':view_coment,'view_like':view_like,'view_fondo':view_fondo,'view_titulo':view_titulo,'view_letra':view_letra})
+    respuesta = template.render(contexto)
+    return HttpResponse(respuesta)
 
 @csrf_exempt
 def museo(request,museo_id):
@@ -253,8 +257,11 @@ def museo(request,museo_id):
     view_museos += '<h3>Lista de comentarios</h3>'
     for comentario in comentarios:
         view_museos += '<h4>'+comentario.usuario.nombre.username+'</h4>: '+comentario.comentario+'<br>'+str(comentario.fecha)
-    view_log,view_coment,view_like,view_fondo,view_letra,view_titulo = identificado(request,"museo")
-    return HttpResponse(view_museos+'<br>'+view_log+'<br>'+view_coment+'<br>'+view_like+'<br>'+view_fondo+'<br>'+view_letra+'<br>'+view_titulo)
+    view_barra,view_log,view_coment,view_like,view_fondo,view_letra,view_titulo = identificado(request,"museo")
+    template = get_template('index.html')
+    contexto = Context({'view_barra':view_barra,'view_museos':view_museos,'view_log':view_log,'view_coment':view_coment,'view_like':view_like,'view_fondo':view_fondo,'view_titulo':view_titulo,'view_letra':view_letra})
+    respuesta = template.render(contexto)
+    return HttpResponse(respuesta)
 
 @csrf_exempt
 def museos(request):
@@ -268,8 +275,11 @@ def museos(request):
     for museo in museos:
         view_museos += '<li><a href="http://localhost:8000/museos/'+str(museo.id)+'">'+museo.nombre+'</a></li>'
     view_museos += '</ul>'
-    view_log,view_coment,view_like,view_fondo,view_letra,view_titulo = identificado(request,"museos")
-    return HttpResponse(menu+'<br>'+view_museos+'<br>'+view_log+'<br>'+view_coment+'<br>'+view_like+'<br>'+view_fondo+'<br>'+view_letra+'<br>'+view_titulo)
+    view_barra,view_log,view_coment,view_like,view_fondo,view_letra,view_titulo = identificado(request,"museos")
+    template = get_template('index.html')
+    contexto = Context({'view_barra':view_barra,'view_museos':view_museos,'view_log':view_log,'view_coment':view_coment,'view_like':view_like,'view_fondo':view_fondo,'view_titulo':view_titulo,'view_letra':view_letra})
+    respuesta = template.render(contexto)
+    return HttpResponse(respuesta)
 
 def update(request):
     Museo.objects.all().delete()
@@ -282,6 +292,34 @@ def login(request):
     if user is not None:
         auth.login(request,user)
     return redirect('http://localhost:8000')
+
+def about(request):
+    view_museos = ""
+    view_barra,view_log,view_coment,view_like,view_fondo,view_letra,view_titulo = identificado(request,"about")
+    view_museos += '<h2>Pagina de información</h2><br><li>Para ver todos los museos pincha en el enlace "Todos"</li>'
+    view_museos += '<li>Para ver la pagina personal de cada usuario pincha en "Inicio" y despues en enlace de un usuario</li>'
+    view_museos += '<li>Para porder disfrutar de todas las funcionalidades como añadir comentarios inicia sesion</li>'
+    view_museos += '<li>Cuando hayas inicado sesion podras cambiar el color y la letra de la pagina, y guardar los museos que mas te gusten</li>'
+    view_museos += '<li>En la lista de todos los museos podras filtrar por distritos</li>'
+    view_museos += '<li>En la pagina principal se mostraran los museos con mas comentarios y podras filtrar por accesibilidad</li>'
+    template = get_template('index.html')
+    contexto = Context({'view_barra':view_barra,'view_museos':view_museos,'view_log':view_log,'view_coment':view_coment,'view_like':view_like,'view_fondo':view_fondo,'view_titulo':view_titulo,'view_letra':view_letra})
+    respuesta = template.render(contexto)
+    return HttpResponse(respuesta)
+
+def css(request):
+    color = "blue"
+    tamaño = "13px"
+    if request.user.is_authenticated():
+         aux_usuario = User.objects.get(username=request.user.username)
+         aux_usuario = Usuario.objects.get(nombre_id=aux_usuario)
+         color = aux_usuario.fondo
+         tamaño = str(aux_usuario.tamaño)+'px'
+    template = get_template('styles/layout.css')
+    contexto = Context({'color': color,'letra': tamaño})
+    respuesta = template.render(contexto)
+    return HttpResponse(respuesta,content_type="text/css")
+    
 
 def xml(request,usuario_id):
     selecciones = Seleccion.objects.filter(usuario_id=usuario_id)
